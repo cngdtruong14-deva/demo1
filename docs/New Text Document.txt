@@ -1,0 +1,94 @@
+Kiến trúc tổng thể (docs/architecture)
+system-design.md — Kiến trúc tổng thể
+Mục tiêu: Trình bày bức tranh toàn cảnh hệ thống (các service, luồng dữ liệu, tích hợp bên thứ ba).
+
+Nên có: Sơ đồ kiến trúc (C4 model: Context/Container/Component), mô tả thành phần và trách nhiệm, các ràng buộc phi chức năng (bảo mật, hiệu năng, độ sẵn sàng).
+
+Ví dụ: Frontend (SPA) ↔ API Gateway ↔ Microservices (User, Order, Inventory) ↔ Database; kèm các hàng rào bảo mật và observability.
+
+database-schema.md — ERD & Table Design
+Mục tiêu: Xác định cấu trúc dữ liệu: thực thể, quan hệ, khóa, ràng buộc.
+
+Nên có: ERD (Entity-Relationship Diagram), định nghĩa bảng, kiểu dữ liệu, index, foreign key, quy tắc chuẩn hóa/denormalization.
+
+Ví dụ: Bảng Users, Orders, OrderItems, Products; chỉ mục cho truy vấn tìm kiếm, chiến lược partition/sharding nếu cần.
+
+api-design.md — RESTful API Specification
+Mục tiêu: Chuẩn hóa API để frontend/backend tích hợp thống nhất.
+
+Nên có: Danh sách endpoint, method, request/response schema (JSON), mã lỗi, auth (JWT/OAuth), versioning, rate limit.
+
+Ví dụ: POST /auth/login, GET /orders?status=…, chuẩn hóa pagination (page, limit), chuẩn lỗi (code, message, details).
+
+realtime-flow.md — Socket.io Event Flow
+Mục tiêu: Mô tả cơ chế realtime (sự kiện, kênh, quyền).
+
+Nên có: Danh sách event, payload, acknowledgment, quy tắc subscribe/broadcast, retry/backoff, xử lý disconnect.
+
+Ví dụ: Event order.updated, room theo userId/storeId, xác thực kết nối bằng token, chống spam bằng server-side throttling.
+
+Triển khai hệ thống (docs/deployment)
+docker-guide.md — Hướng dẫn Docker
+Mục tiêu: Chuẩn hóa container hóa để dev/test/production đồng nhất.
+
+Nên có: Cấu trúc Dockerfile, multi-stage build, docker-compose cho local, quản lý env/secret, volume và network.
+
+Ví dụ: Dockerfile cho frontend (build + serve), backend (node-alpine), compose với services: api, db, redis, traefik.
+
+cloud-deployment.md — Deploy lên AWS/GCP
+Mục tiêu: Quy trình đưa hệ thống lên cloud an toàn, có thể lặp lại.
+
+Nên có: IaC (Terraform), lựa chọn dịch vụ (EKS/GKE, RDS/Cloud SQL, S3/GCS), pipeline CI/CD, secrets management (AWS Secrets Manager).
+
+Ví dụ: Triển khai backend lên EKS, dùng ALB/Ingress, lưu ảnh lên S3, logs qua CloudWatch, metrics qua Prometheus/Grafana.
+
+scaling-strategy.md — Chiến lược scale
+Mục tiêu: Kế hoạch mở rộng theo tải và dữ liệu.
+
+Nên có: Horizontal/vertical scaling, autoscaling (HPA), cache (Redis), CQRS/event-driven, phân mảnh dữ liệu, tối ưu truy vấn.
+
+Ví dụ: Hạn chế điểm nghẽn ở DB bằng read replicas, cache layer cho danh mục, hàng đợi (Kafka) cho tác vụ nền.
+
+Phát triển phần mềm (docs/development)
+setup-guide.md — Cài đặt môi trường dev
+Mục tiêu: Giúp dev mới chạy dự án nhanh, đúng phiên bản.
+
+Nên có: Yêu cầu hệ thống (Node, Python, Docker, DB), thiết lập .env, lệnh cài dependencies, chạy frontend/backend, seeding data.
+
+Ví dụ: nvm use 18, npm i, docker-compose up db, npm run dev:api, npm start:web, tạo tài khoản admin mẫu.
+
+coding-standards.md — Chuẩn code
+Mục tiêu: Đồng nhất phong cách và chất lượng code.
+
+Nên có: Quy tắc lint/format (ESLint, Prettier), đặt tên, cấu trúc thư mục, review checklist, quy chuẩn error handling/logging.
+
+Ví dụ: Import thứ tự, tránh logic trong controller, validate input bằng schema (Zod/Joi), log theo mức (info/warn/error).
+
+git-workflow.md — Git branching strategy
+Mục tiêu: Quy trình làm việc với Git để giảm xung đột, dễ release.
+
+Nên có: Mô hình nhánh (Gitflow/Trunk-based), naming convention (feature/, fix/, hotfix/), PR checklist, code review, release tagging.
+
+Ví dụ: main, develop, release/x.y, feature/abc; yêu cầu 2 reviewer, CI checks xanh mới được merge.
+
+Hướng dẫn người dùng (docs/user-guides)
+customer-manual.md — Hướng dẫn khách hàng
+Mục tiêu: Tài liệu cho người dùng cuối thao tác sản phẩm.
+
+Nên có: Onboarding, chức năng chính, FAQ, xử lý lỗi thường gặp, liên hệ hỗ trợ.
+
+Ví dụ: Đăng ký, đặt đơn, theo dõi trạng thái, phương thức thanh toán, khôi phục mật khẩu.
+
+kitchen-manual.md — Hướng dẫn bếp
+Mục tiêu: Tài liệu cho bộ phận vận hành nội bộ.
+
+Nên có: Quy trình nhận/chuẩn bị đơn, cập nhật trạng thái, quản lý tồn kho, dashboard vận hành.
+
+Ví dụ: Nhận order realtime, xác nhận chế biến, đánh dấu hoàn thành, cảnh báo nguyên liệu thấp.
+
+admin-manual.md — Hướng dẫn quản trị
+Mục tiêu: Dành cho admin/quản lý hệ thống.
+
+Nên có: Quản lý người dùng/quyền, cấu hình hệ thống, báo cáo, giám sát, backup/restore.
+
+Ví dụ: Phân quyền role-based, thiết lập tham số (giá, khuyến mãi), xem logs và health, chạy backup định kỳ.
