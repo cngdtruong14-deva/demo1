@@ -1,0 +1,11 @@
+/**
+ * E2E Tests Placeholder
+ * Add your end-to-end tests here
+ */
+
+describe('E2E Tests', () => {
+  it('should run e2e tests', () => {
+    expect(true).toBe(true);
+  });
+});
+

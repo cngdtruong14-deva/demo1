@@ -1,0 +1,105 @@
+# ============================================
+# QR Order Platform - Load Testing Scenarios
+# Artillery.io Configuration
+# ============================================
+
+config:
+  target: "http://localhost:5000"
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 1
+      name: "Warm up"
+    
+    # Ramp up phase
+    - duration: 120
+      arrivalRate: 1
+      rampTo: 10
+      name: "Ramp up load"
+    
+    # Sustained load
+    - duration: 300
+      arrivalRate: 10
+      name: "Sustained load"
+    
+    # Spike test
+    - duration: 60
+      arrivalRate: 50
+      name: "Spike test"
+    
+    # Cool down
+    - duration: 60
+      arrivalRate: 5
+      name: "Cool down"
+  
+  processor: "./processor.js"
+  plugins:
+    expect: {}
+    metrics-by-endpoint:
+      stripQueryString: true
+  variables:
+    branchId: "{{ $processEnvironment.TEST_BRANCH_ID }}"
+    apiBaseUrl: "http://localhost:5000/api/v1"
+
+scenarios:
+  # Menu browsing (most common)
+  - name: "Browse Menu"
+    weight: 40
+    flow:
+      - get:
+          url: "/api/v1/menu/{{ branchId }}"
+          expect:
+            - statusCode: 200
+            - contentType: json
+            - hasProperty: data.categories
+      - think: 2
+      - get:
+          url: "/api/v1/menu/{{ branchId }}/summary"
+          expect:
+            - statusCode: 200
+
+  # Menu with filters
+  - name: "Browse Menu with Filters"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/v1/menu/{{ branchId }}?status=available&hideEmpty=true"
+          expect:
+            - statusCode: 200
+      - think: 3
+
+  # Search menu
+  - name: "Search Menu"
+    weight: 15
+    flow:
+      - get:
+          url: "/api/v1/menu/{{ branchId }}?search=phở"
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  # Health check
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/v1/health"
+          expect:
+            - statusCode: 200
+            - hasProperty: success
+      - think: 1
+
+  # Authentication flow
+  - name: "Login Flow"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "test@example.com"
+            password: "test123"
+          expect:
+            - statusCode: [200, 401]  # 401 is acceptable for invalid credentials
+            - contentType: json
+      - think: 2
+

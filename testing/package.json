@@ -1,0 +1,23 @@
+{
+  "name": "restaurant-testing",
+  "version": "1.0.0",
+  "description": "Testing suite for Smart Restaurant Platform",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:load": "k6 run load-testing/order-load.js",
+    "test:load:socket": "k6 run load-testing/socket-load.js",
+    "test:api": "newman run api-testing/collection.json",
+    "test:api:env": "newman run api-testing/collection.json --environment api-testing/environment.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "k6": "^0.47.0",
+    "newman": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
